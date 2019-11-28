@@ -1,6 +1,6 @@
-//Name(s):Matchatta Toyaem
-//ID
-//Section
+//Name(s):Kamonwan Tangamornphiboon, Patakorn Jearat, Matchatta Toyaem
+//ID: 6088034, 6088065, 6088169
+//Section: 2
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -135,29 +135,29 @@ public class PageRanker {
 	 * 
 	 */
 	public void runPageRank(String perplexityOutFilename, String prOutFilename){
-		while(!isConverge()){
-			double sinkPR=0;
-			HashMap<Integer, Double> newPR = new HashMap<>();
-			for(int p : S){
-				sinkPR+=PR.get(p);
-			}
-			for(int p : P){
-				double newPR_value = (1-d)/P.size();
-				newPR_value+= d*sinkPR/P.size();
-				if(M.containsKey(p)){
-					for(int q : M.get(p)){
-						newPR_value+=d*PR.get(q)/L.get(q).doubleValue();
-					}
-				}
-				newPR.put(p, newPR_value);
-			}
-			PR.putAll(newPR);
-		}
 		try{
 			FileWriter perplexityFile = new FileWriter(perplexityOutFilename);
 			PrintWriter writePerplexity = new PrintWriter(perplexityFile);
 			FileWriter prFile = new FileWriter(prOutFilename);
 			PrintWriter writePR = new PrintWriter(prFile);
+			while(!isConverge()){
+				double sinkPR=0;
+				HashMap<Integer, Double> newPR = new HashMap<>();
+				for(int p : S){
+					sinkPR+=PR.get(p);
+				}
+				for(int p : P){
+					double newPR_value = (1-d)/P.size();
+					newPR_value+= d*sinkPR/P.size();
+					if(M.containsKey(p)){
+						for(int q : M.get(p)){
+							newPR_value+=d*PR.get(q)/L.get(q).doubleValue();
+						}
+					}
+					newPR.put(p, newPR_value);
+				}
+				PR.putAll(newPR);
+			}
 			for(int p : P){
 				writePR.println(p+" "+PR.get(p));
 			}
@@ -192,10 +192,10 @@ public class PageRanker {
 	{
 	long startTime = System.currentTimeMillis();
 		PageRanker pageRanker =  new PageRanker();
-		pageRanker.loadData("test.dat");
+		pageRanker.loadData("citeseer.dat");
 		pageRanker.initialize();
 		pageRanker.runPageRank("perplexity.out", "pr_scores.out");
-		Integer[] rankedPages = pageRanker.getRankedPages(6);
+		Integer[] rankedPages = pageRanker.getRankedPages(100);
 	double estimatedTime = (double)(System.currentTimeMillis() - startTime)/1000.0;
 		
 		System.out.println("Top 100 Pages are:\n"+Arrays.toString(rankedPages));
